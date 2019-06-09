@@ -1,0 +1,555 @@
+These are register settings from the firmware that comes installed on the dev board:
+
+rt1020> regs DCDC *
+REG0                          : 40080000[31:0] = 0x94030111   DCDC Register 0
+  STS_DC_OK[31]               : 1                             Status register to indicate DCDC status. 1'b1: DCDC already settled 1'b0: DCDC is settling
+  XTAL_24M_OK[29]             : 0                             set to 1 to switch internal ring osc to xtal 24M
+  CURRENT_ALERT_RESET[28]     : 1                             reset current alert signal
+  XTALOK_DISABLE[27]          : 0                             1'b1: Disable xtalok detection circuit 1'b0: Enable xtalok detection circuit
+  PWD_CMP_OFFSET[26]          : 1                             power down output range comparator
+  LP_HIGH_HYS[21]             : 0                             Adjust hysteretic value in low power from 12.5mV to 25mV
+  LP_OVERLOAD_FREQ_SEL[20]    : 0                             the period of counting the charging times in power save mode 0: eight 32k cycle 1: sixteen 32k cycle
+  LP_OVERLOAD_THRSH[19:18]    : 0                             the threshold of the counting number of charging times during the period that lp_overload_freq_sel sets in power save mode
+  PWD_HIGH_VOLT_DET[17]       : 1                             power down overvoltage detection comparator
+  EN_LP_OVERLOAD_SNS[16]      : 1                             enable the overload detection in power save mode, if current is larger than the overloading threshold (typical value is 50 mA), DCDC will switch to the run mode automatically
+  ADJ_POSLIMIT_BUCK[15:12]    : 0                             adjust value to poslimit_buck register
+  PWD_CMP_BATT_DET[11]        : 0                             set to "1" to power down the low voltage detection comparator
+  OVERCUR_TRIG_ADJ[10:9]      : 0                             The threshold of over current detection in run mode and power save mode: run mode power save mode 0x0 1 A 0
+  PWD_OVERCUR_DET[8]          : 1                             power down overcurrent detection comparator
+  CUR_SNS_THRSH[7:5]          : 0                             Set the threshold of current detector, if the peak current of the inductor exceeds the threshold, the current detector will assert
+  PWD_CUR_SNS_CMP[4]          : 1                             power down the control signal of the current detector
+  PWD_OSC_INT[3]              : 0                             Power down internal osc. Only set this bit, when 24 MHz crystal osc is available
+  SEL_CLK[2]                  : 0                             select 24 MHz Crystal clock for DCDC, when dcdc_disable_auto_clk_switch is set
+  DISABLE_AUTO_CLK_SWITCH[1]  : 0                             Disable automatic clock switch from internal osc to xtal clock
+  PWD_ZCD[0]                  : 1                             power down the zero cross detection function for discontinuous conductor mode
+REG1                          : 40080004[31:0] = 0x111ba29c   DCDC Register 1
+  VBG_TRIM[28:24]             : 0x11                          trim bandgap voltage
+  LOOPCTRL_EN_HYST[23]        : 0                             Enable hysteresis in switching converter common mode analog comparators
+  LOOPCTRL_HST_THRESH[21]     : 0                             increase the threshold detection for common mode analog comparator
+  NEGLIMIT_IN[20:14]          : 0x6e                          Negative duty cycle limit of DC-DC converter
+  LP_CMP_ISRC_SEL[13:12]      : 2                             set the current bias of low power comparator 0x0: 50 nA 0x1: 100 nA 0x2: 200 nA 0x3: 400 nA
+  REG_RLOAD_SW[9]             : 1                             control the load resistor of the internal regulator of DCDC, the load resistor is connected as default "1", and need set to "0" to disconnect the load resistor
+  REG_FBK_SEL[8:7]            : 1                             select the feedback point of the internal regulator
+  POSLIMIT_BUCK_IN[6:0]       : 0x1c                          Upper limit duty cycle limit in DC-DC converter
+REG2                          : 40080008[31:0] = 0x00000009   DCDC Register 2
+  DCM_SET_CTRL[28]            : 0                             Set high to improve the transition from heavy load to light load
+  DISABLE_PULSE_SKIP[27]      : 0                             Set to "0" : stop charging if the duty cycle is lower than what set by dcdc_neglimit_in
+  BATTMONITOR_BATT_VAL[25:16] : 0                             Software should be configured to place the battery voltage in this register measured with an 8-mV LSB resolution through the ADC
+  BATTMONITOR_EN_BATADJ[15]   : 0                             This bit enables the DC-DC to improve efficiency and minimize ripple using the information from the BATT_VAL field
+  LOOPCTRL_HYST_SIGN[13]      : 0                             Invert the sign of the hysteresis in DC-DC analog comparators
+  LOOPCTRL_RCSCALE_THRSH[12]  : 0                             Increase the threshold detection for RC scale circuit
+  LOOPCTRL_EN_RCSCALE[11:9]   : 0                             Enable analog circuit of DC-DC converter to respond faster under transient load conditions
+  LOOPCTRL_DC_FF[8:6]         : 0                             Two's complement feed forward step in duty cycle in the switching DC-DC converter
+  LOOPCTRL_DC_R[5:2]          : 2                             Magnitude of proportional control parameter in the switching DC-DC converter control loop
+  LOOPCTRL_DC_C[1:0]          : 1                             Ratio of integral control parameter to proportional control parameter in the switching DC-DC converter, and can be used to optimize efficiency and loop response
+REG3                          : 4008000c[31:0] = 0x00000112   DCDC Register 3
+  DISABLE_STEP[30]            : 0                             Disable stepping for the output VDD_SOC of DCDC
+  MISC_DISABLEFET_LOGIC[28]   : 0                             Reserved
+  MISC_DELAY_TIMING[27]       : 0                             Ajust delay to reduce ground noise
+  MINPWR_DC_HALFCLK[24]       : 0                             Set DCDC clock to half freqeuncy for continuous mode
+  TARGET_LP[10:8]             : 1                             Target value of standby (low power) mode 0x0: 0
+  TRG[4:0]                    : 0x12                          Target value of VDD_SOC, 25 mV each step 0x0: 0.8V 0xE: 1.15V 0x1F:1.575V
+
+
+rt1020> regs XTALOSC24M *
+MISC0                        : 400d8150[31:0]            = 0x24008080   Miscellaneous Register 0
+  VID_PLL_PREDIV[31]         : 0 VID_PLL_PREDIV_0                       Predivider for the source clock of the PLL's. Not related to oscillator
+  XTAL_24M_PWD[30]           : 0                                        This field powers down the 24M crystal oscillator if set true
+  RTC_XTAL_SOURCE[29]        : 1 RTC_XTAL_SOURCE_1                      This field indicates which chip source is being used for the rtc clock
+  CLKGATE_DELAY[28:26]       : 1 CLKGATE_DELAY_1                        This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+  CLKGATE_CTRL[25]           : 0 ALLOW_AUTO_GATE                        This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+  OSC_XTALOK_EN[16]          : 0                                        This bit enables the detector that signals when the 24MHz crystal oscillator is stable
+  OSC_XTALOK[15]             : 1                                        Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+  OSC_I[14:13]               : 0 NOMINAL                                This field determines the bias current in the 24MHz oscillator
+  DISCON_HIGH_SNVS[12]       : 0 DISCON_HIGH_SNVS_0                     This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN
+  STOP_MODE_CONFIG[11:10]    : 0 STOP_MODE_CONFIG_0                     Configure the analog behavior in stop mode.Not related to oscillator
+  REFTOP_VBGUP[7]            : 1                                        Status bit that signals the analog bandgap voltage is up and stable
+  REFTOP_VBGADJ[6:4]         : 0 REFTOP_VBGADJ_0                        Not related to oscillator
+  REFTOP_SELFBIASOFF[3]      : 0 REFTOP_SELFBIASOFF_0                   Control bit to disable the self-bias circuit in the analog bandgap
+  REFTOP_PWD[0]              : 0                                        Control bit to power-down the analog bandgap reference circuitry
+MISC0_SET                    : 400d8154[31:0]            = 0x24008080   Miscellaneous Register 0
+  VID_PLL_PREDIV[31]         : 0 VID_PLL_PREDIV_0                       Predivider for the source clock of the PLL's. Not related to oscillator
+  XTAL_24M_PWD[30]           : 0                                        This field powers down the 24M crystal oscillator if set true
+  RTC_XTAL_SOURCE[29]        : 1 RTC_XTAL_SOURCE_1                      This field indicates which chip source is being used for the rtc clock
+  CLKGATE_DELAY[28:26]       : 1 CLKGATE_DELAY_1                        This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+  CLKGATE_CTRL[25]           : 0 ALLOW_AUTO_GATE                        This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+  OSC_XTALOK_EN[16]          : 0                                        This bit enables the detector that signals when the 24MHz crystal oscillator is stable
+  OSC_XTALOK[15]             : 1                                        Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+  OSC_I[14:13]               : 0 NOMINAL                                This field determines the bias current in the 24MHz oscillator
+  DISCON_HIGH_SNVS[12]       : 0 DISCON_HIGH_SNVS_0                     This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN
+  STOP_MODE_CONFIG[11:10]    : 0 STOP_MODE_CONFIG_0                     Configure the analog behavior in stop mode.Not related to oscillator
+  REFTOP_VBGUP[7]            : 1                                        Status bit that signals the analog bandgap voltage is up and stable
+  REFTOP_VBGADJ[6:4]         : 0 REFTOP_VBGADJ_0                        Not related to oscillator
+  REFTOP_SELFBIASOFF[3]      : 0 REFTOP_SELFBIASOFF_0                   Control bit to disable the self-bias circuit in the analog bandgap
+  REFTOP_PWD[0]              : 0                                        Control bit to power-down the analog bandgap reference circuitry
+MISC0_CLR                    : 400d8158[31:0]            = 0x24008080   Miscellaneous Register 0
+  VID_PLL_PREDIV[31]         : 0 VID_PLL_PREDIV_0                       Predivider for the source clock of the PLL's. Not related to oscillator
+  XTAL_24M_PWD[30]           : 0                                        This field powers down the 24M crystal oscillator if set true
+  RTC_XTAL_SOURCE[29]        : 1 RTC_XTAL_SOURCE_1                      This field indicates which chip source is being used for the rtc clock
+  CLKGATE_DELAY[28:26]       : 1 CLKGATE_DELAY_1                        This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+  CLKGATE_CTRL[25]           : 0 ALLOW_AUTO_GATE                        This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+  OSC_XTALOK_EN[16]          : 0                                        This bit enables the detector that signals when the 24MHz crystal oscillator is stable
+  OSC_XTALOK[15]             : 1                                        Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+  OSC_I[14:13]               : 0 NOMINAL                                This field determines the bias current in the 24MHz oscillator
+  DISCON_HIGH_SNVS[12]       : 0 DISCON_HIGH_SNVS_0                     This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN
+  STOP_MODE_CONFIG[11:10]    : 0 STOP_MODE_CONFIG_0                     Configure the analog behavior in stop mode.Not related to oscillator
+  REFTOP_VBGUP[7]            : 1                                        Status bit that signals the analog bandgap voltage is up and stable
+  REFTOP_VBGADJ[6:4]         : 0 REFTOP_VBGADJ_0                        Not related to oscillator
+  REFTOP_SELFBIASOFF[3]      : 0 REFTOP_SELFBIASOFF_0                   Control bit to disable the self-bias circuit in the analog bandgap
+  REFTOP_PWD[0]              : 0                                        Control bit to power-down the analog bandgap reference circuitry
+MISC0_TOG                    : 400d815c[31:0]            = 0x24008080   Miscellaneous Register 0
+  VID_PLL_PREDIV[31]         : 0 VID_PLL_PREDIV_0                       Predivider for the source clock of the PLL's. Not related to oscillator
+  XTAL_24M_PWD[30]           : 0                                        This field powers down the 24M crystal oscillator if set true
+  RTC_XTAL_SOURCE[29]        : 1 RTC_XTAL_SOURCE_1                      This field indicates which chip source is being used for the rtc clock
+  CLKGATE_DELAY[28:26]       : 1 CLKGATE_DELAY_1                        This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+  CLKGATE_CTRL[25]           : 0 ALLOW_AUTO_GATE                        This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+  OSC_XTALOK_EN[16]          : 0                                        This bit enables the detector that signals when the 24MHz crystal oscillator is stable
+  OSC_XTALOK[15]             : 1                                        Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+  OSC_I[14:13]               : 0 NOMINAL                                This field determines the bias current in the 24MHz oscillator
+  DISCON_HIGH_SNVS[12]       : 0 DISCON_HIGH_SNVS_0                     This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN
+  STOP_MODE_CONFIG[11:10]    : 0 STOP_MODE_CONFIG_0                     Configure the analog behavior in stop mode.Not related to oscillator
+  REFTOP_VBGUP[7]            : 1                                        Status bit that signals the analog bandgap voltage is up and stable
+  REFTOP_VBGADJ[6:4]         : 0 REFTOP_VBGADJ_0                        Not related to oscillator
+  REFTOP_SELFBIASOFF[3]      : 0 REFTOP_SELFBIASOFF_0                   Control bit to disable the self-bias circuit in the analog bandgap
+  REFTOP_PWD[0]              : 0                                        Control bit to power-down the analog bandgap reference circuitry
+LOWPWR_CTRL                  : 400d8270[31:0]            = 0x00074f01   XTAL OSC (LP) Control Register
+  MIX_PWRGATE[17]            : 1                                        Display power gate control. Used as software mask. Set to zero to force ungated
+  XTALOSC_PWRUP_STAT[16]     : 1 XTALOSC_PWRUP_STAT_1                   Status of the 24MHz xtal oscillator
+  XTALOSC_PWRUP_DELAY[15:14] : 1 XTALOSC_PWRUP_DELAY_1                  Specifies the time delay between when the 24MHz xtal is powered up until it is stable and ready to use
+  RCOSC_CG_OVERRIDE[13]      : 0                                        For debug purposes only
+  DISPLAY_PWRGATE[11]        : 1                                        Display logic power gate control. Used as software override. Not related to oscillator
+  CPU_PWRGATE[10]            : 1                                        CPU power gate control. Used as software override. Test purpose only Not related to oscillator
+  L2_PWRGATE[9]              : 1                                        L2 power gate control. Used as software override. Not related to oscillator
+  L1_PWRGATE[8]              : 1                                        L1 power gate control. Used as software override. Not related to oscillator
+  REFTOP_IBIAS_OFF[7]        : 0                                        Low power reftop ibias disable. Not related to oscillator
+  LPBG_TEST[6]               : 0                                        Low power bandgap test bit. Not related to oscillator
+  LPBG_SEL[5]                : 0 LPBG_SEL_0                             Bandgap select. Not related to oscillator
+  OSC_SEL[4]                 : 0 OSC_SEL_0                              Select the source for the 24MHz clock
+  RC_OSC_PROG[3:1]           : 0                                        RC osc. tuning values
+  RC_OSC_EN[0]               : 1 RC_OSC_EN_1                            RC Osc. enable control
+LOWPWR_CTRL_SET              : 400d8274[31:0]            = 0x00074f01   XTAL OSC (LP) Control Register
+  MIX_PWRGATE[17]            : 1                                        Display power gate control. Used as software mask. Set to zero to force ungated
+  XTALOSC_PWRUP_STAT[16]     : 1 XTALOSC_PWRUP_STAT_1                   Status of the 24MHz xtal oscillator
+  XTALOSC_PWRUP_DELAY[15:14] : 1 XTALOSC_PWRUP_DELAY_1                  Specifies the time delay between when the 24MHz xtal is powered up until it is stable and ready to use
+  RCOSC_CG_OVERRIDE[13]      : 0                                        For debug purposes only
+  DISPLAY_PWRGATE[11]        : 1                                        Display logic power gate control. Used as software override. Not related to oscillator
+  CPU_PWRGATE[10]            : 1                                        CPU power gate control. Used as software override. Test purpose only Not related to oscillator
+  L2_PWRGATE[9]              : 1                                        L2 power gate control. Used as software override. Not related to oscillator
+  L1_PWRGATE[8]              : 1                                        L1 power gate control. Used as software override. Not related to oscillator
+  REFTOP_IBIAS_OFF[7]        : 0                                        Low power reftop ibias disable. Not related to oscillator
+  LPBG_TEST[6]               : 0                                        Low power bandgap test bit. Not related to oscillator
+  LPBG_SEL[5]                : 0 LPBG_SEL_0                             Bandgap select. Not related to oscillator
+  OSC_SEL[4]                 : 0 OSC_SEL_0                              Select the source for the 24MHz clock
+  RC_OSC_PROG[3:1]           : 0                                        RC osc. tuning values
+  RC_OSC_EN[0]               : 1 RC_OSC_EN_1                            RC Osc. enable control
+LOWPWR_CTRL_CLR              : 400d8278[31:0]            = 0x00074f01   XTAL OSC (LP) Control Register
+  MIX_PWRGATE[17]            : 1                                        Display power gate control. Used as software mask. Set to zero to force ungated
+  XTALOSC_PWRUP_STAT[16]     : 1 XTALOSC_PWRUP_STAT_1                   Status of the 24MHz xtal oscillator
+  XTALOSC_PWRUP_DELAY[15:14] : 1 XTALOSC_PWRUP_DELAY_1                  Specifies the time delay between when the 24MHz xtal is powered up until it is stable and ready to use
+  RCOSC_CG_OVERRIDE[13]      : 0                                        For debug purposes only
+  DISPLAY_PWRGATE[11]        : 1                                        Display logic power gate control. Used as software override. Not related to oscillator
+  CPU_PWRGATE[10]            : 1                                        CPU power gate control. Used as software override. Test purpose only Not related to oscillator
+  L2_PWRGATE[9]              : 1                                        L2 power gate control. Used as software override. Not related to oscillator
+  L1_PWRGATE[8]              : 1                                        L1 power gate control. Used as software override. Not related to oscillator
+  REFTOP_IBIAS_OFF[7]        : 0                                        Low power reftop ibias disable. Not related to oscillator
+  LPBG_TEST[6]               : 0                                        Low power bandgap test bit. Not related to oscillator
+  LPBG_SEL[5]                : 0 LPBG_SEL_0                             Bandgap select. Not related to oscillator
+  OSC_SEL[4]                 : 0 OSC_SEL_0                              Select the source for the 24MHz clock
+  RC_OSC_PROG[3:1]           : 0                                        RC osc. tuning values
+  RC_OSC_EN[0]               : 1 RC_OSC_EN_1                            RC Osc. enable control
+LOWPWR_CTRL_TOG              : 400d827c[31:0]            = 0x00074f01   XTAL OSC (LP) Control Register
+  MIX_PWRGATE[17]            : 1                                        Display power gate control. Used as software mask. Set to zero to force ungated
+  XTALOSC_PWRUP_STAT[16]     : 1 XTALOSC_PWRUP_STAT_1                   Status of the 24MHz xtal oscillator
+  XTALOSC_PWRUP_DELAY[15:14] : 1 XTALOSC_PWRUP_DELAY_1                  Specifies the time delay between when the 24MHz xtal is powered up until it is stable and ready to use
+  RCOSC_CG_OVERRIDE[13]      : 0                                        For debug purposes only
+  DISPLAY_PWRGATE[11]        : 1                                        Display logic power gate control. Used as software override. Not related to oscillator
+  CPU_PWRGATE[10]            : 1                                        CPU power gate control. Used as software override. Test purpose only Not related to oscillator
+  L2_PWRGATE[9]              : 1                                        L2 power gate control. Used as software override. Not related to oscillator
+  L1_PWRGATE[8]              : 1                                        L1 power gate control. Used as software override. Not related to oscillator
+  REFTOP_IBIAS_OFF[7]        : 0                                        Low power reftop ibias disable. Not related to oscillator
+  LPBG_TEST[6]               : 0                                        Low power bandgap test bit. Not related to oscillator
+  LPBG_SEL[5]                : 0 LPBG_SEL_0                             Bandgap select. Not related to oscillator
+  OSC_SEL[4]                 : 0 OSC_SEL_0                              Select the source for the 24MHz clock
+  RC_OSC_PROG[3:1]           : 0                                        RC osc. tuning values
+  RC_OSC_EN[0]               : 1 RC_OSC_EN_1                            RC Osc. enable control
+OSC_CONFIG0                  : 400d82a0[31:0]            = 0x04002040   XTAL OSC Configuration 0 Register
+  RC_OSC_PROG_CUR[31:24]     : 4                                        The current tuning value in use
+  HYST_MINUS[19:16]          : 0                                        Negative hysteresis value
+  HYST_PLUS[15:12]           : 2                                        Positive hysteresis value
+  RC_OSC_PROG[11:4]          : 4                                        RC osc. tuning values
+  INVERT[3]                  : 0                                        Invert the stepping of the calculated RC tuning value
+  BYPASS[2]                  : 0                                        Bypasses any calculated RC tuning value and uses the programmed register value
+  ENABLE[1]                  : 0                                        Enables the tuning logic to calculate new RC tuning values
+  START[0]                   : 0                                        Start/stop bit for the RC tuning calculation logic. If stopped the tuning logic is reset
+OSC_CONFIG0_SET              : 400d82a4[31:0]            = 0x04002040   XTAL OSC Configuration 0 Register
+  RC_OSC_PROG_CUR[31:24]     : 4                                        The current tuning value in use
+  HYST_MINUS[19:16]          : 0                                        Negative hysteresis value
+  HYST_PLUS[15:12]           : 2                                        Positive hysteresis value
+  RC_OSC_PROG[11:4]          : 4                                        RC osc. tuning values
+  INVERT[3]                  : 0                                        Invert the stepping of the calculated RC tuning value
+  BYPASS[2]                  : 0                                        Bypasses any calculated RC tuning value and uses the programmed register value
+  ENABLE[1]                  : 0                                        Enables the tuning logic to calculate new RC tuning values
+  START[0]                   : 0                                        Start/stop bit for the RC tuning calculation logic. If stopped the tuning logic is reset
+OSC_CONFIG0_CLR              : 400d82a8[31:0]            = 0x04002040   XTAL OSC Configuration 0 Register
+  RC_OSC_PROG_CUR[31:24]     : 4                                        The current tuning value in use
+  HYST_MINUS[19:16]          : 0                                        Negative hysteresis value
+  HYST_PLUS[15:12]           : 2                                        Positive hysteresis value
+  RC_OSC_PROG[11:4]          : 4                                        RC osc. tuning values
+  INVERT[3]                  : 0                                        Invert the stepping of the calculated RC tuning value
+  BYPASS[2]                  : 0                                        Bypasses any calculated RC tuning value and uses the programmed register value
+  ENABLE[1]                  : 0                                        Enables the tuning logic to calculate new RC tuning values
+  START[0]                   : 0                                        Start/stop bit for the RC tuning calculation logic. If stopped the tuning logic is reset
+OSC_CONFIG0_TOG              : 400d82ac[31:0]            = 0x04002040   XTAL OSC Configuration 0 Register
+  RC_OSC_PROG_CUR[31:24]     : 4                                        The current tuning value in use
+  HYST_MINUS[19:16]          : 0                                        Negative hysteresis value
+  HYST_PLUS[15:12]           : 2                                        Positive hysteresis value
+  RC_OSC_PROG[11:4]          : 4                                        RC osc. tuning values
+  INVERT[3]                  : 0                                        Invert the stepping of the calculated RC tuning value
+  BYPASS[2]                  : 0                                        Bypasses any calculated RC tuning value and uses the programmed register value
+  ENABLE[1]                  : 0                                        Enables the tuning logic to calculate new RC tuning values
+  START[0]                   : 0                                        Start/stop bit for the RC tuning calculation logic. If stopped the tuning logic is reset
+OSC_CONFIG1                  : 400d82b0[31:0]            = 0x000002ee   XTAL OSC Configuration 1 Register
+  COUNT_RC_CUR[31:20]        : 0                                        The current tuning value in use
+  COUNT_RC_TRG[11:0]         : 0x2ee                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG1_SET              : 400d82b4[31:0]            = 0x000002ee   XTAL OSC Configuration 1 Register
+  COUNT_RC_CUR[31:20]        : 0                                        The current tuning value in use
+  COUNT_RC_TRG[11:0]         : 0x2ee                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG1_CLR              : 400d82b8[31:0]            = 0x000002ee   XTAL OSC Configuration 1 Register
+  COUNT_RC_CUR[31:20]        : 0                                        The current tuning value in use
+  COUNT_RC_TRG[11:0]         : 0x2ee                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG1_TOG              : 400d82bc[31:0]            = 0x000002ee   XTAL OSC Configuration 1 Register
+  COUNT_RC_CUR[31:20]        : 0                                        The current tuning value in use
+  COUNT_RC_TRG[11:0]         : 0x2ee                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG2                  : 400d82c0[31:0]            = 0x800102e2   XTAL OSC Configuration 2 Register
+  CLK_1M_ERR_FL[31]          : 1                                        Flag indicates that the count_1m count wasn't reached within 1 32KHz period
+  MUX_1M[17]                 : 0                                        Mux the corrected or uncorrected 1MHz clock to the output
+  ENABLE_1M[16]              : 1                                        Enable the 1MHz clock output. 0 - disabled; 1 - enabled
+  COUNT_1M_TRG[11:0]         : 0x2e2                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG2_SET              : 400d82c4[31:0]            = 0x800102e2   XTAL OSC Configuration 2 Register
+  CLK_1M_ERR_FL[31]          : 1                                        Flag indicates that the count_1m count wasn't reached within 1 32KHz period
+  MUX_1M[17]                 : 0                                        Mux the corrected or uncorrected 1MHz clock to the output
+  ENABLE_1M[16]              : 1                                        Enable the 1MHz clock output. 0 - disabled; 1 - enabled
+  COUNT_1M_TRG[11:0]         : 0x2e2                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG2_CLR              : 400d82c8[31:0]            = 0x800102e2   XTAL OSC Configuration 2 Register
+  CLK_1M_ERR_FL[31]          : 1                                        Flag indicates that the count_1m count wasn't reached within 1 32KHz period
+  MUX_1M[17]                 : 0                                        Mux the corrected or uncorrected 1MHz clock to the output
+  ENABLE_1M[16]              : 1                                        Enable the 1MHz clock output. 0 - disabled; 1 - enabled
+  COUNT_1M_TRG[11:0]         : 0x2e2                                    The target count used to tune the RC OSC frequency
+OSC_CONFIG2_TOG              : 400d82cc[31:0]            = 0x800102e2   XTAL OSC Configuration 2 Register
+  CLK_1M_ERR_FL[31]          : 1                                        Flag indicates that the count_1m count wasn't reached within 1 32KHz period
+  MUX_1M[17]                 : 0                                        Mux the corrected or uncorrected 1MHz clock to the output
+  ENABLE_1M[16]              : 1                                        Enable the 1MHz clock output. 0 - disabled; 1 - enabled
+  COUNT_1M_TRG[11:0]         : 0x2e2                                    The target count used to tune the RC OSC frequency
+
+
+rt1020> regs CCM *
+CCR                               : 400fc000[31:0]                    = 0x0401107f   CCM Control Register
+  RBC_EN[27]                      : 0 RBC_EN_0                                       Enable for REG_BYPASS_COUNTER
+  REG_BYPASS_COUNT[26:21]         : 0x20                                             Counter for analog_reg_bypass signal assertion after standby voltage request by PMIC_STBY_REQ
+  COSC_EN[12]                     : 1 COSC_EN_1                                      On chip oscillator enable bit - this bit value is reflected on the output cosc_en
+  OSCNT[7:0]                      : 0x7f                                             Oscillator ready counter value
+CSR                               : 400fc008[31:0]                    = 0x00000038   CCM Status Register
+  COSC_READY[5]                   : 1 COSC_READY_1                                   Status indication of on board oscillator
+  CAMP2_READY[3]                  : 1 CAMP2_READY_1                                  Status indication of CAMP2
+  REF_EN_B[0]                     : 0 REF_EN_B_0                                     Status of the value of CCM_REF_EN_B output of ccm
+CCSR                              : 400fc00c[31:0]                    = 0x00000100   CCM Clock Switcher Register
+  PLL3_SW_CLK_SEL[0]              : 0 PLL3_SW_CLK_SEL_0                              Selects source to generate pll3_sw_clk. This bit should only be used for testing purposes
+CACRR                             : 400fc010[31:0]                    = 0            CCM Arm Clock Root Register
+  ARM_PODF[2:0]                   : 0 ARM_PODF_0                                     Divider for ARM clock root
+CBCDR                             : 400fc014[31:0]                    = 0x00078340   CCM Bus Clock Divider Register
+  PERIPH_CLK2_PODF[29:27]         : 0 PERIPH_CLK2_PODF_0                             Divider for periph_clk2_podf
+  PERIPH_CLK_SEL[25]              : 0 PERIPH_CLK_SEL_0                               Selector for peripheral main clock
+  SEMC_PODF[18:16]                : 7 SEMC_PODF_7                                    Post divider for SEMC clock
+  AHB_PODF[12:10]                 : 0 AHB_PODF_0                                     Divider for AHB PODF
+  IPG_PODF[9:8]                   : 3 IPG_PODF_3                                     Divider for ipg podf
+  SEMC_ALT_CLK_SEL[7]             : 0 SEMC_ALT_CLK_SEL_0                             SEMC alternative clock select
+  SEMC_CLK_SEL[6]                 : 1 SEMC_CLK_SEL_1                                 SEMC clock source select
+CBCMR                             : 400fc018[31:0]                    = 0x31ae8324   CCM Bus Clock Multiplexer Register
+  LPSPI_PODF[28:26]               : 4 LPSPI_PODF_4                                   Divider for LPSPI. Divider should be updated when output clock is gated
+  LCDIF_PODF[25:23]               : 3 LCDIF_PODF_3                                   Post-divider for LCDIF clock
+  PRE_PERIPH_CLK_SEL[19:18]       : 3 PRE_PERIPH_CLK_SEL_3                           Selector for pre_periph clock multiplexer
+  TRACE_CLK_SEL[15:14]            : 2 TRACE_CLK_SEL_2                                Selector for Trace clock multiplexer
+  PERIPH_CLK2_SEL[13:12]          : 0 PERIPH_CLK2_SEL_0                              Selector for peripheral clk2 clock multiplexer
+  LPSPI_CLK_SEL[5:4]              : 2 LPSPI_CLK_SEL_2                                Selector for lpspi clock multiplexer
+CSCMR1                            : 400fc01c[31:0]                    = 0x65900000   CCM Serial Clock Multiplexer Register 1
+  FLEXSPI_CLK_SEL[30:29]          : 3 FLEXSPI_CLK_SEL_3                              Selector for flexspi clock multiplexer
+  FLEXSPI_PODF[25:23]             : 3 FLEXSPI_PODF_3                                 Divider for flexspi clock root
+  USDHC2_CLK_SEL[17]              : 0 USDHC2_CLK_SEL_0                               Selector for usdhc2 clock multiplexer
+  USDHC1_CLK_SEL[16]              : 0 USDHC1_CLK_SEL_0                               Selector for usdhc1 clock multiplexer
+  SAI3_CLK_SEL[15:14]             : 0 SAI3_CLK_SEL_0                                 Selector for sai3 clock multiplexer
+  SAI2_CLK_SEL[13:12]             : 0 SAI2_CLK_SEL_0                                 Selector for sai2 clock multiplexer
+  SAI1_CLK_SEL[11:10]             : 0 SAI1_CLK_SEL_0                                 Selector for sai1 clock multiplexer
+  PERCLK_CLK_SEL[6]               : 0 PERCLK_CLK_SEL_0                               Selector for the perclk clock multiplexor
+  PERCLK_PODF[5:0]                : 0 PERCLK_PODF_0                                  Divider for perclk podf
+CSCMR2                            : 400fc020[31:0]                    = 0x13192e06   CCM Serial Clock Multiplexer Register 2
+  FLEXIO2_CLK_SEL[20:19]          : 3 FLEXIO2_CLK_SEL_3                              Selector for flexio2 clock multiplexer
+  CAN_CLK_SEL[9:8]                : 2 CAN_CLK_SEL_2                                  Selector for FlexCAN clock multiplexer
+  CAN_CLK_PODF[7:2]               : 1                                                Divider for can clock podf
+CSCDR1                            : 400fc024[31:0]                    = 0x04490b00   CCM Serial Clock Divider Register 1
+  TRACE_PODF[27:25]               : 2 TRACE_PODF_2                                   Divider for trace clock. Divider should be updated when output clock is gated
+  USDHC2_PODF[18:16]              : 1 USDHC2_PODF_1                                  Divider for usdhc2 clock. Divider should be updated when output clock is gated
+  USDHC1_PODF[13:11]              : 1 USDHC1_PODF_1                                  Divider for usdhc1 clock podf. Divider should be updated when output clock is gated
+  UART_CLK_SEL[6]                 : 0 UART_CLK_SEL_0                                 Selector for the UART clock multiplexor
+  UART_CLK_PODF[5:0]              : 0 UART_CLK_PODF_0                                Divider for uart clock podf
+CS1CDR                            : 400fc028[31:0]                    = 0x0ec102c1   CCM Clock Divider Register
+  FLEXIO2_CLK_PODF[27:25]         : 7 FLEXIO2_CLK_PODF_7                             Divider for flexio2 clock
+  SAI3_CLK_PRED[24:22]            : 3 SAI3_CLK_PRED_3                                Divider for sai3 clock pred
+  SAI3_CLK_PODF[21:16]            : 1                                                Divider for sai3 clock podf
+  FLEXIO2_CLK_PRED[11:9]          : 1 FLEXIO2_CLK_PRED_1                             Divider for flexio2 clock
+  SAI1_CLK_PRED[8:6]              : 3 SAI1_CLK_PRED_3                                Divider for sai1 clock pred
+  SAI1_CLK_PODF[5:0]              : 1                                                Divider for sai1 clock podf
+CS2CDR                            : 400fc02c[31:0]                    = 0x000736c1   CCM Clock Divider Register
+  SAI2_CLK_PRED[8:6]              : 3 SAI2_CLK_PRED_3                                Divider for sai2 clock pred.Divider should be updated when output clock is gated
+  SAI2_CLK_PODF[5:0]              : 1                                                Divider for sai2 clock podf
+CDCDR                             : 400fc030[31:0]                    = 0x33f71f92   CCM D1 Clock Divider Register
+  SPDIF0_CLK_PRED[27:25]          : 1 SPDIF0_CLK_PRED_1                              Divider for spdif0 clock pred. Divider should be updated when output clock is gated
+  SPDIF0_CLK_PODF[24:22]          : 7 SPDIF0_CLK_PODF_7                              Divider for spdif0 clock podf. Divider should be updated when output clock is gated
+  SPDIF0_CLK_SEL[21:20]           : 3 SPDIF0_CLK_SEL_3                               Selector for spdif0 clock multiplexer
+  FLEXIO1_CLK_PRED[14:12]         : 1 FLEXIO1_CLK_PRED_1                             Divider for flexio1 clock pred. Divider should be updated when output clock is gated
+  FLEXIO1_CLK_PODF[11:9]          : 7 FLEXIO1_CLK_PODF_7                             Divider for flexio1 clock podf. Divider should be updated when output clock is gated
+  FLEXIO1_CLK_SEL[8:7]            : 3 FLEXIO1_CLK_SEL_3                              Selector for flexio1 clock multiplexer
+CSCDR2                            : 400fc038[31:0]                    = 0x002a9150   CCM Serial Clock Divider Register 2
+  LPI2C_CLK_PODF[24:19]           : 5                                                Divider for lpi2c clock podf
+  LPI2C_CLK_SEL[18]               : 0 LPI2C_CLK_SEL_0                                Selector for the LPI2C clock multiplexor
+  LCDIF_PRE_CLK_SEL[17:15]        : 5 LCDIF_PRE_CLK_SEL_5                            Selector for lcdif root clock pre-multiplexer
+  LCDIF_PRED[14:12]               : 1 LCDIF_PRED_1                                   Pre-divider for lcdif clock. Divider should be updated when output clock is gated
+  LCDIF_CLK_SEL[11:9]             : 0 LCDIF_CLK_SEL_0                                Selector for LCDIF root clock multiplexer
+CSCDR3                            : 400fc03c[31:0]                    = 0x00030841   CCM Serial Clock Divider Register 3
+  CSI_PODF[13:11]                 : 1 CSI_PODF_1                                     Post divider for csi_mclk. Divider should be updated when output clock is gated
+  CSI_CLK_SEL[10:9]               : 0 CSI_CLK_SEL_0                                  Selector for csi_mclk multiplexer
+CDHIPR                            : 400fc048[31:0]                    = 0            CCM Divider Handshake In-Process Register
+  ARM_PODF_BUSY[16]               : 0 ARM_PODF_BUSY_0                                Busy indicator for arm_podf
+  PERIPH_CLK_SEL_BUSY[5]          : 0 PERIPH_CLK_SEL_BUSY_0                          Busy indicator for periph_clk_sel mux control
+  PERIPH2_CLK_SEL_BUSY[3]         : 0 PERIPH2_CLK_SEL_BUSY_0                         Busy indicator for periph2_clk_sel mux control
+  AHB_PODF_BUSY[1]                : 0 AHB_PODF_BUSY_0                                Busy indicator for ahb_podf
+  SEMC_PODF_BUSY[0]               : 0 SEMC_PODF_BUSY_0                               Busy indicator for semc_podf
+CLPCR                             : 400fc054[31:0]                    = 0x00000079   CCM Low Power Control Register
+  MASK_L2CC_IDLE[27]              : 0 MASK_L2CC_IDLE_0                               Mask L2CC IDLE for entering low power mode
+  MASK_SCU_IDLE[26]               : 0 MASK_SCU_IDLE_0                                Mask SCU IDLE for entering low power mode Assertion of all bits[27:22] will generate low power mode request
+  MASK_CORE0_WFI[22]              : 0 MASK_CORE0_WFI_0                               Mask WFI of core0 for entering low power mode Assertion of all bits[27:22] will generate low power mode request
+  BYPASS_LPM_HS0[21]              : 0                                                Bypass low power mode handshake. This bit should always be set to 1'b1 by software
+  BYPASS_LPM_HS1[19]              : 0                                                Bypass low power mode handshake. This bit should always be set to 1'b1 by software
+  COSC_PWRDOWN[11]                : 0 COSC_PWRDOWN_0                                 In run mode, software can manually control powering down of on chip oscillator, i
+  STBY_COUNT[10:9]                : 0 STBY_COUNT_0                                   Standby counter definition
+  VSTBY[8]                        : 0 VSTBY_0                                        Voltage standby request bit
+  DIS_REF_OSC[7]                  : 0 DIS_REF_OSC_0                                  dis_ref_osc - in run mode, software can manually control closing of external reference oscillator clock, i
+  SBYOS[6]                        : 1 SBYOS_1                                        Standby clock oscillator bit
+  ARM_CLK_DIS_ON_LPM[5]           : 1 ARM_CLK_DIS_ON_LPM_1                           Define if ARM clocks (arm_clk, soc_mxclk, soc_pclk, soc_dbg_pclk, vl_wrck) will be disabled on wait mode
+  LPM[1:0]                        : 1 LPM_1                                          Setting the low power mode that system will enter on next assertion of dsm_request signal
+CISR                              : 400fc058[31:0]                    = 0x04d20000   CCM Interrupt Status Register
+  ARM_PODF_LOADED[26]             : 1 ARM_PODF_LOADED_1                              CCM interrupt request 1 generated due to frequency change of arm_podf
+  PERIPH_CLK_SEL_LOADED[22]       : 1 PERIPH_CLK_SEL_LOADED_1                        CCM interrupt request 1 generated due to update of periph_clk_sel
+  AHB_PODF_LOADED[20]             : 1 AHB_PODF_LOADED_1                              CCM interrupt request 1 generated due to frequency change of ahb_podf
+  PERIPH2_CLK_SEL_LOADED[19]      : 0 PERIPH2_CLK_SEL_LOADED_0                       CCM interrupt request 1 generated due to frequency change of periph2_clk_sel
+  SEMC_PODF_LOADED[17]            : 1 SEMC_PODF_LOADED_1                             CCM interrupt request 1 generated due to frequency change of semc_podf
+  COSC_READY[6]                   : 0 COSC_READY_0                                   CCM interrupt request 2 generated due to on board oscillator ready, i
+  LRF_PLL[0]                      : 0 LRF_PLL_0                                      CCM interrupt request 2 generated due to lock of all enabled and not bypaseed PLLs
+CIMR                              : 400fc05c[31:0]                    = 0xffffffff   CCM Interrupt Mask Register
+  ARM_PODF_LOADED[26]             : 1 ARM_PODF_LOADED_1                              mask interrupt generation due to frequency change of arm_podf
+  MASK_PERIPH_CLK_SEL_LOADED[22]  : 1 MASK_PERIPH_CLK_SEL_LOADED_1                   mask interrupt generation due to update of periph_clk_sel
+  MASK_AHB_PODF_LOADED[20]        : 1 MASK_AHB_PODF_LOADED_1                         mask interrupt generation due to frequency change of ahb_podf
+  MASK_PERIPH2_CLK_SEL_LOADED[19] : 1 MASK_PERIPH2_CLK_SEL_LOADED_1                  mask interrupt generation due to update of periph2_clk_sel
+  MASK_SEMC_PODF_LOADED[17]       : 1 MASK_SEMC_PODF_LOADED_1                        mask interrupt generation due to frequency change of semc_podf
+  MASK_COSC_READY[6]              : 1 MASK_COSC_READY_1                              mask interrupt generation due to on board oscillator ready
+  MASK_LRF_PLL[0]                 : 1 MASK_LRF_PLL_1                                 mask interrupt generation due to lrf of PLLs
+CCOSR                             : 400fc060[31:0]                    = 0x000a0001   CCM Clock Output Source Register
+  CLKO2_EN[24]                    : 0 CLKO2_EN_0                                     Enable of CCM_CLKO2 clock
+  CLKO2_DIV[23:21]                : 0 CLKO2_DIV_0                                    Setting the divider of CCM_CLKO2
+  CLKO2_SEL[20:16]                : 0xa                                              Selection of the clock to be generated on CCM_CLKO2
+  CLK_OUT_SEL[8]                  : 0 CLK_OUT_SEL_0                                  CCM_CLKO1 output to reflect CCM_CLKO1 or CCM_CLKO2 clocks
+  CLKO1_EN[7]                     : 0 CLKO1_EN_0                                     Enable of CCM_CLKO1 clock
+  CLKO1_DIV[6:4]                  : 0 CLKO1_DIV_0                                    Setting the divider of CCM_CLKO1
+  CLKO1_SEL[3:0]                  : 1                                                Selection of the clock to be generated on CCM_CLKO1
+CGPR                              : 400fc064[31:0]                    = 0x0000fe62   CCM General Purpose Register
+  INT_MEM_CLK_LPM[17]             : 0 INT_MEM_CLK_LPM_0                              Control for the Deep Sleep signal to the ARM Platform memories with additional control logic based on the ARM WFI signal
+  FPL[16]                         : 0 FPL_0                                          Fast PLL enable
+  SYS_MEM_DS_CTRL[15:14]          : 3                                                System memory DS control
+  EFUSE_PROG_SUPPLY_GATE[4]       : 0 EFUSE_PROG_SUPPLY_GATE_0                       Defines the value of the output signal cgpr_dout[4]. Gate of program supply for efuse programing
+  PMIC_DELAY_SCALER[0]            : 0 PMIC_DELAY_SCALER_0                            Defines clock dividion of clock for stby_count (pmic delay counter)
+CCGR0                             : 400fc068[31:0]                    = 0xffffffff   CCM Clock Gating Register 0
+  CG15[31:30]                     : 3                                                gpio2_clocks (gpio2_clk_enable)
+  CG14[29:28]                     : 3                                                lpuart2 clock (lpuart2_clk_enable)
+  CG13[27:26]                     : 3                                                gpt2 serial clocks (gpt2_serial_clk_enable)
+  CG12[25:24]                     : 3                                                gpt2 bus clocks (gpt2_bus_clk_enable)
+  CG11[23:22]                     : 3                                                trace clock (trace_clk_enable)
+  CG10[21:20]                     : 3                                                can2_serial clock (can2_serial_clk_enable)
+  CG9[19:18]                      : 3                                                can2 clock (can2_clk_enable)
+  CG8[17:16]                      : 3                                                can1_serial clock (can1_serial_clk_enable)
+  CG7[15:14]                      : 3                                                can1 clock (can1_clk_enable)
+  CG6[13:12]                      : 3                                                lpuart3 clock (lpuart3_clk_enable)
+  CG5[11:10]                      : 3                                                dcp clock (dcp_clk_enable)
+  CG4[9:8]                        : 3                                                Reserved
+  CG3[7:6]                        : 3                                                Reserved
+  CG2[5:4]                        : 3                                                mqs clock ( mqs_hmclk_clock_enable)
+  CG1[3:2]                        : 3                                                aips_tz2 clocks (aips_tz2_clk_enable)
+  CG0[1:0]                        : 3                                                aips_tz1 clocks (aips_tz1_clk_enable)
+CCGR1                             : 400fc06c[31:0]                    = 0xffffffff   CCM Clock Gating Register 1
+  CG15[31:30]                     : 3                                                gpio5 clock (gpio5_clk_enable)
+  CG14[29:28]                     : 3                                                csu clock (csu_clk_enable)
+  CG13[27:26]                     : 3                                                gpio1 clock (gpio1_clk_enable)
+  CG12[25:24]                     : 3                                                lpuart4 clock (lpuart4_clk_enable)
+  CG11[23:22]                     : 3                                                gpt serial clock (gpt_serial_clk_enable)
+  CG10[21:20]                     : 3                                                gpt bus clock (gpt_clk_enable)
+  CG9[19:18]                      : 3                                                Reserved
+  CG8[17:16]                      : 3                                                adc1 clock (adc1_clk_enable)
+  CG7[15:14]                      : 3                                                aoi2 clocks (aoi2_clk_enable)
+  CG6[13:12]                      : 3                                                pit clocks (pit_clk_enable)
+  CG5[11:10]                      : 3                                                enet clock (enet_clk_enable)
+  CG4[9:8]                        : 3                                                adc2 clock (adc2_clk_enable)
+  CG3[7:6]                        : 3                                                lpspi4 clocks (lpspi4_clk_enable)
+  CG2[5:4]                        : 3                                                lpspi3 clocks (lpspi3_clk_enable)
+  CG1[3:2]                        : 3                                                lpspi2 clocks (lpspi2_clk_enable)
+  CG0[1:0]                        : 3                                                lpspi1 clocks (lpspi1_clk_enable)
+CCGR2                             : 400fc070[31:0]                    = 0xffffffff   CCM Clock Gating Register 2
+  CG15[31:30]                     : 3                                                pxp clocks (pxp_clk_enable)
+  CG14[29:28]                     : 3                                                lcd clocks (lcd_clk_enable)
+  CG13[27:26]                     : 3                                                gpio3 clock (gpio3_clk_enable)
+  CG12[25:24]                     : 3                                                xbar2 clock (xbar2_clk_enable)
+  CG11[23:22]                     : 3                                                xbar1 clock (xbar1_clk_enable)
+  CG10[21:20]                     : 3                                                ipmux3 clock (ipmux3_clk_enable)
+  CG9[19:18]                      : 3                                                ipmux2 clock (ipmux2_clk_enable)
+  CG8[17:16]                      : 3                                                ipmux1 clock (ipmux1_clk_enable)
+  CG7[15:14]                      : 3                                                xbar3 clock (xbar3_clk_enable)
+  CG6[13:12]                      : 3                                                OCOTP_CTRL clock (iim_clk_enable)
+  CG5[11:10]                      : 3                                                lpi2c3 clock (lpi2c3_clk_enable)
+  CG4[9:8]                        : 3                                                lpi2c2 clock (lpi2c2_clk_enable)
+  CG3[7:6]                        : 3                                                lpi2c1 clock (lpi2c1_clk_enable)
+  CG2[5:4]                        : 3                                                iomuxc_snvs clock (iomuxc_snvs_clk_enable)
+  CG1[3:2]                        : 3                                                csi clock (csi_clk_enable)
+  CG0[1:0]                        : 3                                                Reserved
+CCGR3                             : 400fc074[31:0]                    = 0xffffffff   CCM Clock Gating Register 3
+  CG15[31:30]                     : 3                                                iomuxc_snvs_gpr clock (iomuxc_snvs_gpr_clk_enable)
+  CG14[29:28]                     : 3                                                ocram clock (ocram_clk_enable)
+  CG13[27:26]                     : 3                                                acmp4 clocks (acmp4_clk_enable)
+  CG12[25:24]                     : 3                                                acmp3 clocks (acmp3_clk_enable)
+  CG11[23:22]                     : 3                                                acmp2 clocks (acmp2_clk_enable)
+  CG10[21:20]                     : 3                                                acmp1 clocks (acmp1_clk_enable)
+  CG9[19:18]                      : 3                                                flexram clock (flexram_clk_enable)
+  CG8[17:16]                      : 3                                                wdog1 clock (wdog1_clk_enable)
+  CG7[15:14]                      : 3                                                ewm clocks (ewm_clk_enable)
+  CG6[13:12]                      : 3                                                gpio4 clock (gpio4_clk_enable)
+  CG5[11:10]                      : 3                                                LCDIF pix clock (LCDIF_pix_clk_enable)
+  CG4[9:8]                        : 3                                                aoi1 clock (aoi1_clk_enable)
+  CG3[7:6]                        : 3                                                lpuart6 clock (lpuart6_clk_enable)
+  CG2[5:4]                        : 3                                                semc clocks (semc_clk_enable)
+  CG1[3:2]                        : 3                                                lpuart5 clock (lpuart5_clk_enable)
+  CG0[1:0]                        : 3                                                flexio2 clocks (flexio2_clk_enable)
+CCGR4                             : 400fc078[31:0]                    = 0xffffffff   CCM Clock Gating Register 4
+  CG15[31:30]                     : 3                                                enc4 clocks (enc4_clk_enable)
+  CG14[29:28]                     : 3                                                enc3 clocks (enc3_clk_enable)
+  CG13[27:26]                     : 3                                                enc2 clocks (enc2_clk_enable)
+  CG12[25:24]                     : 3                                                enc1 clocks (enc1_clk_enable)
+  CG11[23:22]                     : 3                                                pwm4 clocks (pwm4_clk_enable)
+  CG10[21:20]                     : 3                                                pwm3 clocks (pwm3_clk_enable)
+  CG9[19:18]                      : 3                                                pwm2 clocks (pwm2_clk_enable)
+  CG8[17:16]                      : 3                                                pwm1 clocks (pwm1_clk_enable)
+  CG7[15:14]                      : 3                                                sim_ems clocks (sim_ems_clk_enable)
+  CG6[13:12]                      : 3                                                sim_m clocks (sim_m_clk_enable)
+  CG5[11:10]                      : 3                                                tsc_dig clock (tsc_clk_enable)
+  CG4[9:8]                        : 3                                                sim_m7 clock (sim_m7_clk_enable)
+  CG3[7:6]                        : 3                                                bee clock(bee_clk_enable)
+  CG2[5:4]                        : 3                                                iomuxc gpr clock (iomuxc_gpr_clk_enable)
+  CG1[3:2]                        : 3                                                iomuxc clock (iomuxc_clk_enable)
+  CG0[1:0]                        : 3                                                Reserved
+CCGR5                             : 400fc07c[31:0]                    = 0xffffffff   CCM Clock Gating Register 5
+  CG15[31:30]                     : 3                                                snvs_lp clock (snvs_lp_clk_enable)
+  CG14[29:28]                     : 3                                                snvs_hp clock (snvs_hp_clk_enable)
+  CG13[27:26]                     : 3                                                lpuart7 clock (lpuart7_clk_enable)
+  CG12[25:24]                     : 3                                                lpuart1 clock (lpuart1_clk_enable)
+  CG11[23:22]                     : 3                                                sai3 clock (sai3_clk_enable)
+  CG10[21:20]                     : 3                                                sai2 clock (sai2_clk_enable)
+  CG9[19:18]                      : 3                                                sai1 clock (sai1_clk_enable)
+  CG8[17:16]                      : 3                                                sim_main clock (sim_main_clk_enable)
+  CG7[15:14]                      : 3                                                spdif clock (spdif_clk_enable)
+  CG6[13:12]                      : 3                                                aipstz4 clocks (aips_tz4_clk_enable)
+  CG5[11:10]                      : 3                                                wdog2 clock (wdog2_clk_enable)
+  CG4[9:8]                        : 3                                                kpp clock (kpp_clk_enable)
+  CG3[7:6]                        : 3                                                dma clock (dma_clk_enable)
+  CG2[5:4]                        : 3                                                wdog3 clock (wdog3_clk_enable)
+  CG1[3:2]                        : 3                                                flexio1 clock (flexio1_clk_enable)
+  CG0[1:0]                        : 3                                                rom clock (rom_clk_enable)
+CCGR6                             : 400fc080[31:0]                    = 0xffffffff   CCM Clock Gating Register 6
+  CG15[31:30]                     : 3                                                timer3 clocks (timer4_clk_enable)
+  CG14[29:28]                     : 3                                                timer2 clocks (timer4_clk_enable)
+  CG13[27:26]                     : 3                                                timer1 clocks (timer1_clk_enable)
+  CG12[25:24]                     : 3                                                lpi2c4 serial clock (lpi2c4_serial_clk_enable)
+  CG11[23:22]                     : 3                                                anadig clocks (anadig_clk_enable)
+  CG10[21:20]                     : 3                                                sim_per clock (sim_per_clk_enable)
+  CG9[19:18]                      : 3                                                aips_tz3 clock (aips_tz3_clk_enable)
+  CG8[17:16]                      : 3                                                timer4 clocks (timer4_clk_enable)
+  CG7[15:14]                      : 3                                                lpuart8 clocks (lpuart8_clk_enable)
+  CG6[13:12]                      : 3                                                trng clock (trng_clk_enable)
+  CG5[11:10]                      : 3                                                flexspi clocks (flexspi_clk_enable)
+  CG4[9:8]                        : 3                                                ipmux4 clock (ipmux4_clk_enable)
+  CG3[7:6]                        : 3                                                dcdc clocks (dcdc_clk_enable)
+  CG2[5:4]                        : 3                                                usdhc2 clocks (usdhc2_clk_enable)
+  CG1[3:2]                        : 3                                                usdhc1 clocks (usdhc1_clk_enable)
+  CG0[1:0]                        : 3                                                usboh3 clock (usboh3_clk_enable)
+CMEOR                             : 400fc088[31:0]                    = 0x7fffffff   CCM Module Enable Overide Register
+  MOD_EN_OV_CAN1_CPI[30]          : 1 MOD_EN_OV_CAN1_CPI_1                           Overide clock enable signal from CAN1 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
+  MOD_EN_OV_CAN2_CPI[28]          : 1 MOD_EN_OV_CAN2_CPI_1                           Overide clock enable signal from CAN2 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
+  MOD_EN_OV_TRNG[9]               : 1 MOD_EN_OV_TRNG_1                               Overide clock enable signal from TRNG
+  MOD_EN_USDHC[7]                 : 1 MOD_EN_USDHC_1                                 overide clock enable signal from USDHC
+  MOD_EN_OV_PIT[6]                : 1 MOD_EN_OV_PIT_1                                Overide clock enable signal from PIT - clock will not be gated based on PIT's signal 'ipg_enable_clk'
+  MOD_EN_OV_GPT[5]                : 1 MOD_EN_OV_GPT_1                                Overide clock enable signal from GPT - clock will not be gated based on GPT's signal 'ipg_enable_clk'
+
+rt1020> regs CCM_ANALOG
+PLL_ARM         : 400d8000[31:0] = 0x00013042   Analog ARM PLL control Register
+PLL_ARM_SET     : 400d8004[31:0] = 0x00013042   Analog ARM PLL control Register
+PLL_ARM_CLR     : 400d8008[31:0] = 0x00013042   Analog ARM PLL control Register
+PLL_ARM_TOG     : 400d800c[31:0] = 0x00013042   Analog ARM PLL control Register
+PLL_USB1        : 400d8010[31:0] = 0x80003000   Analog USB1 480MHz PLL Control Register
+PLL_USB1_SET    : 400d8014[31:0] = 0x80003000   Analog USB1 480MHz PLL Control Register
+PLL_USB1_CLR    : 400d8018[31:0] = 0x80003000   Analog USB1 480MHz PLL Control Register
+PLL_USB1_TOG    : 400d801c[31:0] = 0x80003000   Analog USB1 480MHz PLL Control Register
+PLL_USB2        : 400d8020[31:0] = 0x00012000   Analog USB2 480MHz PLL Control Register
+PLL_USB2_SET    : 400d8024[31:0] = 0x00012000   Analog USB2 480MHz PLL Control Register
+PLL_USB2_CLR    : 400d8028[31:0] = 0x00012000   Analog USB2 480MHz PLL Control Register
+PLL_USB2_TOG    : 400d802c[31:0] = 0x00012000   Analog USB2 480MHz PLL Control Register
+PLL_SYS         : 400d8030[31:0] = 0x80002001   Analog System PLL Control Register
+PLL_SYS_SET     : 400d8034[31:0] = 0x80002001   Analog System PLL Control Register
+PLL_SYS_CLR     : 400d8038[31:0] = 0x80002001   Analog System PLL Control Register
+PLL_SYS_TOG     : 400d803c[31:0] = 0x80002001   Analog System PLL Control Register
+PLL_SYS_SS      : 400d8040[31:0] = 0            528MHz System PLL Spread Spectrum Register
+PLL_SYS_NUM     : 400d8050[31:0] = 0            Numerator of 528MHz System PLL Fractional Loop Divider Register
+PLL_SYS_DENOM   : 400d8060[31:0] = 0x00000012   Denominator of 528MHz System PLL Fractional Loop Divider Register
+PLL_AUDIO       : 400d8070[31:0] = 0x00011006   Analog Audio PLL control Register
+PLL_AUDIO_SET   : 400d8074[31:0] = 0x00011006   Analog Audio PLL control Register
+PLL_AUDIO_CLR   : 400d8078[31:0] = 0x00011006   Analog Audio PLL control Register
+PLL_AUDIO_TOG   : 400d807c[31:0] = 0x00011006   Analog Audio PLL control Register
+PLL_AUDIO_NUM   : 400d8080[31:0] = 0x05f5e100   Numerator of Audio PLL Fractional Loop Divider Register
+PLL_AUDIO_DENOM : 400d8090[31:0] = 0x2964619c   Denominator of Audio PLL Fractional Loop Divider Register
+PLL_VIDEO       : 400d80a0[31:0] = 0x0001100c   Analog Video PLL control Register
+PLL_VIDEO_SET   : 400d80a4[31:0] = 0x0001100c   Analog Video PLL control Register
+PLL_VIDEO_CLR   : 400d80a8[31:0] = 0x0001100c   Analog Video PLL control Register
+PLL_VIDEO_TOG   : 400d80ac[31:0] = 0x0001100c   Analog Video PLL control Register
+PLL_VIDEO_NUM   : 400d80b0[31:0] = 0x05f5e100   Numerator of Video PLL Fractional Loop Divider Register
+PLL_VIDEO_DENOM : 400d80c0[31:0] = 0x10a24447   Denominator of Video PLL Fractional Loop Divider Register
+PLL_ENET        : 400d80e0[31:0] = 0x80400000   Analog ENET PLL Control Register
+PLL_ENET_SET    : 400d80e4[31:0] = 0x80400000   Analog ENET PLL Control Register
+PLL_ENET_CLR    : 400d80e8[31:0] = 0x80400000   Analog ENET PLL Control Register
+PLL_ENET_TOG    : 400d80ec[31:0] = 0x80400000   Analog ENET PLL Control Register
+PFD_480         : 400d80f0[31:0] = 0x0f1a2316   480MHz Clock (PLL3) Phase Fractional Divider Control Register
+PFD_480_SET     : 400d80f4[31:0] = 0x0f1a2316   480MHz Clock (PLL3) Phase Fractional Divider Control Register
+PFD_480_CLR     : 400d80f8[31:0] = 0x0f1a2316   480MHz Clock (PLL3) Phase Fractional Divider Control Register
+PFD_480_TOG     : 400d80fc[31:0] = 0x0f1a2316   480MHz Clock (PLL3) Phase Fractional Divider Control Register
+PFD_528         : 400d8100[31:0] = 0x12124040   528MHz Clock (PLL2) Phase Fractional Divider Control Register
+PFD_528_SET     : 400d8104[31:0] = 0x12124040   528MHz Clock (PLL2) Phase Fractional Divider Control Register
+PFD_528_CLR     : 400d8108[31:0] = 0x12124040   528MHz Clock (PLL2) Phase Fractional Divider Control Register
+PFD_528_TOG     : 400d810c[31:0] = 0x12124040   528MHz Clock (PLL2) Phase Fractional Divider Control Register
+MISC0           : 400d8150[31:0] = 0x24008080   Miscellaneous Register 0
+MISC0_SET       : 400d8154[31:0] = 0x24008080   Miscellaneous Register 0
+MISC0_CLR       : 400d8158[31:0] = 0x24008080   Miscellaneous Register 0
+MISC0_TOG       : 400d815c[31:0] = 0x24008080   Miscellaneous Register 0
+MISC1           : 400d8160[31:0] = 0x00030000   Miscellaneous Register 1
+MISC1_SET       : 400d8164[31:0] = 0x00030000   Miscellaneous Register 1
+MISC1_CLR       : 400d8168[31:0] = 0x00030000   Miscellaneous Register 1
+MISC1_TOG       : 400d816c[31:0] = 0x00030000   Miscellaneous Register 1
+MISC2           : 400d8170[31:0] = 0x00272727   Miscellaneous Register 2
+MISC2_SET       : 400d8174[31:0] = 0x00272727   Miscellaneous Register 2
+MISC2_CLR       : 400d8178[31:0] = 0x00272727   Miscellaneous Register 2
+MISC2_TOG       : 400d817c[31:0] = 0x00272727   Miscellaneous Register 2
+
+
+
+
