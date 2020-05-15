@@ -1,0 +1,8 @@
+To connect to our test platform, the esl  address is:
+
+IP: 94.154.121.54
+Port: 37021
+The shopweb url: http://94.154.121.54:8080/shopweb
+
+tel: 06 48 99 76 18
+sunzhi.huang@hanshow.com 
