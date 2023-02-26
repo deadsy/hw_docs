@@ -1,0 +1,40 @@
+1895-035
+
+Backlit A,Z,Call button pad
+
+P1 and P2 connectors (only P1 connected)
+
+P1 - 5 pin
+
+com
+r1
+r2
++
+-
+
+P2 - 6 pin
+
+com
+r1
+r2
+r3
++
+-
+
+Like names have 0 ohms between them - That is: r3 is unique to P2.
+
+A: r1 and common
+Z: r2 and common
+Call: r3 and common
+
+1998-010
+
+Microphone Board
+
+MIC
+GND
+BAT
+
+Electret Microphone
+LM386 amplifier
+Volume Pot

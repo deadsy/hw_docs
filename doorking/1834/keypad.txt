@@ -1,0 +1,33 @@
+1895-032
+
+3 column x 4 row DTMF keypad with backlight
+
+10 pin connector on keypad
+
+01: c3 (red wire on ribbon cable)
+02: c2
+03: r4
+04: r3
+05: - (??)
+06: r2
+07: r1
+08: c1
+09: 0 (??)
+10: + (??)
+
+These 10 pins go to a 10 pin DIL connector on the motherboard
+2 other pins - probably for the backlight
+
++
+-
+
+Notes:
+
+* Needs a firm press to get contact on some of the switches.
+
+   C1 C2 C3
+R1  1  2  3
+R2  4  5  6
+R3  7  8  9
+R4  *  0  #
+

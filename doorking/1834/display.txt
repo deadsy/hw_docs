@@ -1,0 +1,50 @@
+1891-010
+
+20x1 LCD display - hd44780 style controller.
+Similar to: https://www.crystalfontz.com/product/cfah2001zyyhjp-20x1-lcd-character-display
+
+Base board with contrast control and some additional circuitry.
+
+Standard 8x2 DIL 16 pin connector to display
+16 pins to the main board, in line.
+
+LCD connector to main board connector:
+
+LCD Connector
+
+16 K (15,16)    15 A (13,14)
+14 D7 (10)      13 D6 (9)
+12 D5 (8)       11 D4 (7)
+10 D3 (6)       09 D2 (5)
+08 D1 (4)       07 D0 (3)
+06 E (11)       05 RW (1)
+04 RS (12)      03 Vo
+02 Vdd (2)      01 Vss (1)
+
+P1 Connector to Main Board
+
+16 K (16)
+15 K (16)
+14 A (15)
+13 A (15)
+12 RS (4)
+11 E (6)
+10 D7 (14)
+09 D6 (13)
+08 D5 (12)
+07 D4 (11)
+06 D3 (10)
+05 D2 (9)
+04 D1 (8)
+03 D0 (7)
+02 Vdd (2)
+01 Vss (1)
+
+Notes:
+
+* Vo is the LCD supply and is derived from the additional circuitry on the base board.
+* RW is being held low (Same as Vss) - so this is a write only display.
+* A/K (backlight led) each have 2 pins. Typical current to the backlight LED is 270 mA @ 4.2V.
+* This is 5V part but works ok with 3.3V logic inputs.
+
+
