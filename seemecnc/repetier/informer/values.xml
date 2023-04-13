@@ -1,0 +1,30 @@
+<values>
+<value name="fatalErrors"
+type="int">1</value>
+<value name="useHttp"
+type="int">0</value>
+<value name="printPaused"
+type="int">1</value>
+<value name="printStarted"
+type="int">0</value>
+<value name="hostName"
+type="string"/>
+<value name="url"
+type="string">http://</value>
+<value name="group"
+type="string"/>
+<value name="active"
+type="int">0</value>
+<value name="informerHintCount"
+type="int">101</value>
+<value name="printStopped"
+type="int">0</value>
+<value name="printProgressIndex"
+type="int">3</value>
+<value name="slicingFinished"
+type="int">0</value>
+<value name="printProgress"
+type="int">0</value>
+<value name="printFinished"
+type="int">1</value>
+</values>

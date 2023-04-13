@@ -1,0 +1,6 @@
+<values>
+<value name="autoposition"
+type="int">1</value>
+<value name="autozoom"
+type="int">1</value>
+</values>

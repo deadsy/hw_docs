@@ -1,0 +1,20 @@
+<values>
+<value name="supportType"
+type="int">0</value>
+<value name="version"
+type="int">1</value>
+<value name="print"
+type="string">Default</value>
+<value name="filament0"
+type="string">PLA</value>
+<value name="speed"
+type="string">50</value>
+<value name="cooling"
+type="int">1</value>
+<value name="fillDensity"
+type="string">20</value>
+<value name="quality"
+type="string">Xgc6b5eckRVDbLJIwMKVyim8JovOpq7B</value>
+<value name="adhesionType"
+type="int">0</value>
+</values>
